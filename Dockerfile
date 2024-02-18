@@ -1,7 +1,14 @@
-FROM debian:bookworm
+FROM ubuntu:20.04
 ARG TAGS
+ENV ANSIBLE_VERSION 2.9.17
 WORKDIR /usr/local/bin
 ARG DEBIAN_FRONTEND=noninteractive
-RUN apt update && apt install -y software-properties-common && apt-add-repository -y ppa:ansible/ansible && apt update && apt install -y curl git ansible build-essential
+RUN apt-get update; \
+    apt-get install -y gcc python3; \
+    apt-get install -y python3-pip; \
+    apt-get clean all
+RUN pip3 install --upgrade pip; \
+    pip3 install "ansible==${ANSIBLE_VERSION}"; \
+    pip3 install ansible
 COPY . .
-CMD ["sh", "-c", "ansible playbook $TAGS local.yml"]
+# RUN ansible-playbook $TAGS zsh.yml
